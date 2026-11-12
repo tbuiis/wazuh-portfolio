@@ -1,0 +1,25 @@
+<group name="squid,">
+  <!-- HTTPS CONNECT tunnel — chains off built-in base rule 35000 -->
+  <rule id="100501" level="7">
+    <if_sid>35000</if_sid>
+    <match>TCP_TUNNEL</match>
+    <description>Squid HTTPS CONNECT tunnel from $(srcip) to $(squid_host)</description>
+    <group>proxy,network,</group>
+  </rule>
+
+  <!-- Direct HTTP miss/hit (incl. memory cache hit) -->
+  <rule id="100502" level="3">
+    <if_sid>35000</if_sid>
+    <match>TCP_MISS|TCP_HIT|TCP_MEM_HIT</match>
+    <description>Squid HTTP request from $(srcip) to $(squid_host)</description>
+    <group>proxy,info,</group>
+  </rule>
+
+  <!-- Large transfer: squid_bytes > 600 KB -->
+  <rule id="100503" level="6">
+    <if_sid>35000</if_sid>
+    <field name="squid_bytes" type="pcre2">^[6-9][0-9][0-9][0-9][0-9][0-9]$|^[0-9][0-9][0-9][0-9][0-9][0-9][0-9]+$</field>
+    <description>Large transfer via Squid from $(srcip) to $(squid_host) ($(squid_bytes) bytes)</description>
+    <group>proxy,anomaly,</group>
+  </rule>
+</group>

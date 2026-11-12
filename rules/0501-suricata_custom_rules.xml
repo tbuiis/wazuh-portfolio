@@ -1,0 +1,66 @@
+<group name="ids,suricata,">
+
+  <!-- Escalate severity 1 (critical) Suricata alerts -->
+  <rule id="100510" level="12">
+    <if_sid>86601</if_sid>
+    <field name="alert.severity">^1$</field>
+    <description>Suricata: CRITICAL alert - $(alert.signature) from $(src_ip)</description>
+    <group>ids,suricata,critical,</group>
+    <mitre>
+      <id>T1190</id>
+    </mitre>
+  </rule>
+
+  <!-- High severity (2) Suricata alerts -->
+  <rule id="100511" level="10">
+    <if_sid>86601</if_sid>
+    <field name="alert.severity">^2$</field>
+    <description>Suricata: HIGH alert - $(alert.signature) from $(src_ip)</description>
+    <group>ids,suricata,high,</group>
+  </rule>
+
+  <!-- Web application attacks -->
+  <rule id="100512" level="10">
+    <if_sid>86601, 100510, 100511</if_sid>
+    <field name="alert.category">Web Application Attack</field>
+    <description>Suricata: Web Application Attack - $(alert.signature) src:$(src_ip) dst:$(dest_ip)</description>
+    <group>ids,suricata,web_attack,</group>
+    <mitre>
+      <id>T1190</id>
+    </mitre>
+  </rule>
+
+  <!-- Network scan detected -->
+  <rule id="100513" level="8">
+    <if_sid>86601, 100510, 100511</if_sid>
+    <field name="alert.category">Network Scan|Attempted Information Leak</field>
+    <description>Suricata: Network Scan detected - $(alert.signature) from $(src_ip)</description>
+    <group>ids,suricata,recon,</group>
+    <mitre>
+      <id>T1046</id>
+    </mitre>
+  </rule>
+
+  <!-- Attempted admin / privilege gain -->
+  <rule id="100514" level="10">
+    <if_sid>86601, 100510, 100511</if_sid>
+    <field name="alert.category">Attempted Administrator Privilege Gain</field>
+    <description>Suricata: Privilege Escalation Attempt - $(alert.signature) from $(src_ip)</description>
+    <group>ids,suricata,privilege_escalation,</group>
+    <mitre>
+      <id>T1068</id>
+    </mitre>
+  </rule>
+
+  <!-- SQL injection -->
+  <rule id="100515" level="10">
+    <if_sid>86601, 100510, 100511, 100512</if_sid>
+    <match>SQL Injection|sqlmap|UNION SELECT</match>
+    <description>Suricata: SQL Injection detected - $(alert.signature) from $(src_ip)</description>
+    <group>ids,suricata,sql_injection,</group>
+    <mitre>
+      <id>T1190</id>
+    </mitre>
+  </rule>
+
+</group>

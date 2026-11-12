@@ -1,0 +1,4 @@
+alert http any any -> $HOME_NET any (msg:"LOCAL SQL Injection Attempt"; flow:established,to_server; http.uri; content:"UNION"; nocase; content:"SELECT"; nocase; distance:0; classtype:web-application-attack; sid:9000003; rev:1;)
+alert http any any -> $HOME_NET any (msg:"LOCAL Sqlmap User-Agent"; flow:established,to_server; http.user_agent; content:"sqlmap"; nocase; classtype:web-application-attack; sid:9000004; rev:1;)
+alert tcp any any -> $HOME_NET 22 (msg:"LOCAL SSH Scan Detected"; flags:S; threshold:type threshold,track by_src,count 4,seconds 60; classtype:attempted-admin; sid:9000001; rev:1;)
+alert icmp any any -> $HOME_NET any (msg:"LOCAL ICMP Ping Sweep"; itype:8; threshold:type threshold,track by_src,count 5,seconds 10; classtype:network-scan; sid:9000005; rev:1;)

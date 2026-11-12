@@ -1,0 +1,10 @@
+<!-- goes inside <ossec_config> on the agent running squid + suricata -->
+<localfile>
+  <location>/var/log/suricata/eve.json</location>
+  <log_format>json</log_format>
+</localfile>
+
+<localfile>
+  <location>/var/log/squid/access.log</location>
+  <log_format>squid</log_format>
+</localfile>

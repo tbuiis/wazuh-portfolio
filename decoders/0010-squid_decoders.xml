@@ -1,0 +1,6 @@
+<decoder name="squid-access">
+  <type>squid</type>
+  <prematch>^\d+ \S+ \w+/\d+ </prematch>
+  <regex>^(\S+) (\S+) (\w+)/(\d+) (\d+) (\w+) (\S+)</regex>
+  <order>squid_dur,srcip,squid_action,squid_code,squid_bytes,squid_method,squid_host</order>
+</decoder>

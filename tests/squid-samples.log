@@ -1,0 +1,4 @@
+1731420000.123    250 10.0.0.5 TCP_TUNNEL/200 4512 CONNECT www.google.com:443 - HIER_DIRECT/142.250.80.4 -
+1731420001.456     80 10.0.0.5 TCP_MISS/200 1532 GET http://example.com/ - HIER_DIRECT/93.184.216.34 text/html
+1731420002.789   9000 10.0.0.7 TCP_MISS/200 2500000 GET http://files.example.com/big.iso - HIER_DIRECT/93.184.216.34 application/octet-stream
+1731420003.000     10 10.0.0.9 TCP_DENIED/403 3900 GET http://blocked.example.com/ - HIER_NONE/- text/html
