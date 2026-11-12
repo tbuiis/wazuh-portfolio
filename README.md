@@ -1,6 +1,3 @@
-# wazuh-portfolio
-Wazuh home lab with custom decoders and rules for squid proxy logs, and Suricata IDS alerts, plus a dashboard
-
 # wazuh-squid-suricata
 
 Home lab where I set up Wazuh to pick up Squid proxy logs and Suricata IDS alerts, wrote custom decoders/rules for them, and built a dashboard for it.
@@ -29,7 +26,37 @@ dashboard/                              dashboard export (import under Dashboard
 tests/                                  sample logs for wazuh-logtest + script to trigger each rule
 ```
 
-Decoders and rules go in `/var/ossec/etc/decoders` and `/var/ossec/etc/rules` on the manager. `local.rules` goes in `/var/lib/suricata/rules/` and has to be listed under `rule-files` in suricata.yaml.
+## Where stuff lives on the boxes
+
+Manager (192.168.40.244):
+
+```
+/var/ossec/etc/decoders/0010-squid_decoders.xml
+/var/ossec/etc/rules/0500-squid_rules.xml
+/var/ossec/etc/rules/0501-suricata_custom_rules.xml
+/var/ossec/etc/ossec.conf                  realtime FIM on /etc is turned on in <syscheck>
+/var/ossec/logs/alerts/alerts.json         where alerts land before they go to the indexer
+```
+
+Debian VM (192.168.40.121):
+
+```
+/var/ossec/etc/ossec.conf                  agent config, the two <localfile> blocks from agent/localfile.xml go in here
+/var/lib/suricata/rules/local.rules        my signatures
+/etc/suricata/suricata.yaml                local.rules added under rule-files
+/etc/squid/squid.conf                      fixed the localnet acl (old copy saved as squid.conf.bak-2026-11-12)
+/var/log/squid/access.log                  what the agent reads for squid
+/var/log/suricata/eve.json                 what the agent reads for suricata
+```
+
+Windows server (192.168.40.144):
+
+```
+C:\Program Files (x86)\ossec-agent\ossec.conf   only changed the manager address
+C:\Program Files (x86)\ossec-agent\ossec.log    check here if the agent won't connect
+```
+
+Restart after changing anything: `systemctl restart wazuh-manager` on the manager, `systemctl restart wazuh-agent` on the VM, `systemctl restart suricata` if you touch the signatures. The dashboard is just an import, nothing on disk.
 
 ## Rules
 
@@ -64,5 +91,4 @@ sudo /var/ossec/bin/wazuh-logtest < tests/suricata-samples.json
 sudo /var/ossec/bin/wazuh-analysisd -t
 ```
 
-Then with real traffic using `tests/demo-commands.sh` (run on the manager, e.g. `./demo-commands.sh sqli`).
-
+Then with real traffic using `tests/demo-commands.sh` (run on the manager, `./demo-commands.sh all` for everything or e.g. `./demo-commands.sh sqli` for one).
